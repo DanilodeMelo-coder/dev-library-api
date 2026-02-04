@@ -1,20 +1,25 @@
+from typing import Literal, Optional
+from uuid import uuid4
 from fastapi import FastAPI, HTTPException
 import random
 import json
 import os
+from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class Book (BaseModel):
+    name: str
+    price: float
+    book_id: Optional[str] = uuid4().hex
+    genre: Literal["Melhorar-código", "Teoria"]
+
+
 BOOKS_FILES = "books.json"
 
-books_database= [
-    "Clean Code",
-    "O Programador Pragmático",
-    "Código Limpo em Python",
-    "Arquitetura Limpa",
-    "Padrões de Projeto",
-    "Algoritmos: Teoria e Prática"
-]
+books_database = []
+
 
 #checar se o caminho existe
 if os.path.exists(BOOKS_FILES):          #Se o caminho do sistama operacional existir
@@ -62,11 +67,16 @@ async def random_book():
 
 #/add-book -> adicionar livro
 @app.post("/add-book")
-async def add_book(book: str):
-    books_database.append(book)
+async def add_book(book: Book):
+    book.book_id = uuid4().hex
+    json_book = jsonable_encoder(book)
+    books_database.append(json_book)
 
 #pega tudo que esta na database e joga no arquivo "f"
     with open (BOOKS_FILES, "w") as f:                 #"w" -> whrite
         json.dump(books_database, f)
 
     return {"menssage": f"The book {book} was added with sucess"}
+
+#/delete-book -> remover livro
+#/update-book -> atualizar livro
