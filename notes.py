@@ -23,3 +23,12 @@ O servidor não consegue encontrar o recurso solicitado. No navegador,
 isso significa que a URL não é reconhecida. Em uma API, isso também pode significar que o 
 endpoint é válido, mas o recurso em si não existe.
 """
+
+from plyer import notification
+
+notification.notify(
+    title= "Lembrete",
+    message= "Tome água",
+    timeout= 5
+
+)

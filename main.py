@@ -88,7 +88,27 @@ def delete_book(id):
             with open (BOOKS_FILES, 'w') as f:
                 json.dump(books_database, f)
 
-            return {"mensagem": f"The book from id {id} has been removed"}
+            return {"message": f"The book from id {id} has been removed"}
         
     raise HTTPException (404, "Id not found ")
+
+
 #/update-book -> atualizar livro
+@app.put("/update-book/{id}")
+def update_book(id, book: Book):
+    for index, book_db in enumerate(books_database):
+        if book_db["book_id"] == id:
+            book_update = {
+                "name": book.name,
+                "price": book.price,
+                "book_id": id,
+                "genre": book.genre
+            }
+            books_database[index] = book_update
+
+            with open (BOOKS_FILES, "w") as f:
+                json.dump(books_database, f)
+
+
+
+            return {"message": f"The book from id {id} has been updated"}
