@@ -79,4 +79,16 @@ async def add_book(book: Book):
     return {"menssage": f"The book {book} was added with sucess"}
 
 #/delete-book -> remover livro
+@app.delete("/delete-book/{id}")
+def delete_book(id):
+    for index, book in enumerate(books_database):
+        if book["book_id"] == id:
+            books_database.pop(index)
+
+            with open (BOOKS_FILES, 'w') as f:
+                json.dump(books_database, f)
+
+            return {"mensagem": f"The book from id {id} has been removed"}
+        
+    raise HTTPException (404, "Id not found ")
 #/update-book -> atualizar livro
